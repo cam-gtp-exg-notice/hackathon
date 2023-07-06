@@ -1,2 +1,2 @@
-def HelloTraining():
+def RunTraining():
     print("here run training")

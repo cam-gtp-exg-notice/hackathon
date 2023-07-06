@@ -15,6 +15,6 @@ def json_request():
     print(json_re)
     return json_re
 
-def HelloRest():
+def RunRest():
     print("here run rest")
     app.run(debug=True,port=9999)
