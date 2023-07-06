@@ -1,5 +1,5 @@
 from rest import rest
-from langchain import langchain
+from gpt import langchain
 from training import training
 from notify import notify
 
