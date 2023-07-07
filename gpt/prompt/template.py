@@ -22,7 +22,6 @@ URLTemplate = """在 >>> 和 <<< 之间是网页的返回的HTML内容的总结�
 >>> {requests_result} <<<
 请使用如下的JSON格式返回数据
 {{
-  "link": "original request url",
   "time": "announcement time",
   "title": "anancement title",
   "summary": "Exchange announcement text summary",
