@@ -13,23 +13,13 @@ def Request():
 from langchain.prompts import PromptTemplate
 from langchain.llms import OpenAI
 from langchain.chains import LLMRequestsChain, LLMChain
+from prompt.template import URLTemplate
 
 llm = OpenAI(model_name="gpt-3.5-turbo", temperature=0)
 
-template = """在 >>> 和 <<< 之间是网页的返回的HTML内容。
-网页是币安发布的公告。
-请抽取参数请求的信息。
-
->>> {requests_result} <<<
-请使用如下的JSON格式返回数据
-{{
-  ""announcement": "Exchange announcement text",
-}}
-Extracted:"""
-
 prompt = PromptTemplate(
     input_variables=["requests_result"],
-    template=template
+    template=URLTemplate
 )
 
 chain = LLMRequestsChain(llm_chain=LLMChain(llm=llm, prompt=prompt))
