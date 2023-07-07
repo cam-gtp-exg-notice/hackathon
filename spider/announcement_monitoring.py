@@ -33,7 +33,7 @@ def save_cvs(type, articles):
 
     with open(filename, "a", newline="", encoding="utf-8") as csvfile:
         writer = csv.writer(csvfile)
-        # writer.writerow(["title", "url", "releaseDate"])  # 写入CSV文件的标题行
+        #writer.writerow(["title", "url", "releaseDate"])  # 写入CSV文件的标题行
         writer.writerows(data)  # 写入数据行
 
     print(f"数据已保存到 {filename}")
@@ -69,7 +69,7 @@ if __name__ == "__main__":
         for item in all_articles:
             if item['catalogId'] == int(navId):
                 articles = item['articles']
-        # 过滤掉已经存在的文章
+        # # 过滤掉已经存在的文章
         articles = list(filter(lambda x: x['title'] not in existsArticleNames, articles))
         if len(articles) == 0:
             print(binance.dict_nav[navId] + '没有新文章')
