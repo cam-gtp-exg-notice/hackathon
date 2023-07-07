@@ -126,6 +126,13 @@ class FeiShuBot:
         time = message["time"]
         url = message["url"]
 
+        # 80+红，60-80黄，60-是绿
+        if score >= 80:
+            template = "red"
+        elif score >= 60:
+            template = "yellow"
+        else:
+            template = "green"
 
         content = {
             "config": {"wide_screen_mode": True},
@@ -145,9 +152,9 @@ class FeiShuBot:
                          {"tag": "action", "actions": [{"tag": "button", "text": {"tag": "plain_text", "content": "交易所公告链接"},"type": "primary", "multi_url": {"url": f"{url}"}}]}],
         }
         if header:
-            content["header"] = {"title": {"tag": "plain_text", "content": header}, "template": "blue"}
+            content["header"] = {"title": {"tag": "plain_text", "content": header}, "template": template}
         else:
-            content["header"] = {"title": {"tag": "plain_text", "content": "交易所公告信息"}, "template": "blue"}
+            content["header"] = {"title": {"tag": "plain_text", "content": "交易所公告信息"}, "template": template}
         self._send_message("interactive", content)
 
 
