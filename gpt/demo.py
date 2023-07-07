@@ -20,7 +20,7 @@ def RunLangChain():
     #nltk.download('punkt')
     #nltk.download('averaged_perceptron_tagger')
     #RunTxtReader()
-    print(GetJsonFromURL(url="https://www.binance.com/zh-CN/support/announcement/api%E6%9C%8D%E5%8A%A1%E6%9B%B4%E6%96%B0%E5%85%AC%E5%91%8A-654c092a2a2347bdb5ccd6faa0c6c039"))
+    #print(GetJsonFromURL(url="https://www.binance.com/zh-CN/support/announcement/api%E6%9C%8D%E5%8A%A1%E6%9B%B4%E6%96%B0%E5%85%AC%E5%91%8A-654c092a2a2347bdb5ccd6faa0c6c039"))
 
 def RunTxtReader():
     # 导入文本
@@ -71,7 +71,7 @@ def GetJsonFromURL(url):
     out = response['output']
     if is_json_string(out):
         return out
-    return  out
+    return ""
 
 def is_json_string(s):
     try:
