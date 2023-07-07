@@ -6,7 +6,7 @@ from langchain.prompts import PromptTemplate
 from langchain.chat_models import ChatOpenAI
 from .prompt import template
 from langchain.chains import LLMRequestsChain, LLMChain
-import nltk,os
+import nltk,os,json
 
 APIKEY="sb-29b8d019e623a4b6e4dbbbd0dff3d9b78cc8dffd7fab6248"
 PROXY="http://127.0.0.1:10807"
@@ -20,7 +20,7 @@ def RunLangChain():
     #nltk.download('punkt')
     #nltk.download('averaged_perceptron_tagger')
     #RunTxtReader()
-    #GetJsonFromURL()
+    print(GetJsonFromURL(url="https://www.binance.com/zh-CN/support/announcement/api%E6%9C%8D%E5%8A%A1%E6%9B%B4%E6%96%B0%E5%85%AC%E5%91%8A-654c092a2a2347bdb5ccd6faa0c6c039"))
 
 def RunTxtReader():
     # 导入文本
@@ -69,4 +69,13 @@ def GetJsonFromURL(url):
 
     response = chain(inputs)
     out = response['output']
+    if is_json_string(out):
+        return out
     return  out
+
+def is_json_string(s):
+    try:
+        json_object = json.loads(s)
+    except ValueError as e:
+        return False
+    return True
