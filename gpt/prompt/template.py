@@ -28,8 +28,16 @@ YOUR RESPONSE:
 # }}
 # Extracted:"""
 
-URLTemplate="""Between >>> and <<< is the summary and score of the HTML content returned by a webpage.
-As a blockchain developer and trader, we evaluate announcements based on the following criteria: API updates related to assets and accounts receive a score of over 90, API updates related to other interfaces, new trading pairs, and delisting announcements receive a score of over 70, fee adjustment announcements receive a score of over 60, financial management announcements receive a score of over 40, and exchange activity announcements receive a score of over 20. 
+URLTemplate="""Between >>> and <<< is the HTML content returned by a webpage.
+As a blockchain developer and trader, we evaluate announcements based on the following criteria:
+
+API updates related to assets and accounts: score 90-100.
+API updates related to other interfaces, new trading pairs, and delisting announcements: score 70-90.
+fee adjustment announcements: score 60-70.
+financial management announcements: score 40-60.
+exchange activity announcements: score 20-40.
+others: 0~20.
+
 If it is an exchange API update, we will extract the affected API list.
 Based on these criteria, please provide the score and summary of the announcement.
 
@@ -37,7 +45,7 @@ Based on these criteria, please provide the score and summary of the announcemen
 Please use the following JSON format to return the data:
 {{
   "title": "announcement title",
-  "summary": "Exchange announcement text summary, use concise descriptions",
+  "summary": "concise summary",
   "API": "affected API list, empty if no affected",
   "score": A score between 0 to 100,
   "time": "announcement time",
