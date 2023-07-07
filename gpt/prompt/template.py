@@ -45,7 +45,7 @@ Based on these criteria, please provide the score and summary of the announcemen
 Please use the following JSON format to return the data:
 {{
   "title": "announcement title",
-  "summary": "Exchange announcement text summary, use concise descriptions",
+  "summary": "Exchange announcement text summary without title, use concise descriptions",
   "API": "affected API list, empty if no affected",
   "score": A score between 0 to 100,
   "time": "announcement time",

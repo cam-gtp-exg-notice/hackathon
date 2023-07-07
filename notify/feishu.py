@@ -132,7 +132,7 @@ class FeiShuBot:
             "elements": [
                 {"tag": "div", "text": {"tag": "lark_md", "content": f"{title}"}},
                 {"tag": "hr"},
-                {"tag": "div", "text": {"tag": "lark_md", "content": f"**总结**\n{summary}"}},
+                {"tag": "div", "text": {"tag": "lark_md", "content": f"**总结**\n{summary}\n{api}"}},
                  {"tag": "column_set", "flex_mode": "none", "background_style": "default",
                   "columns": [
                   {"tag": "column", "width": "weighted", "weight": 1, "vertical_align": "top", "elements": [

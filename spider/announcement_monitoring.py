@@ -78,7 +78,7 @@ def latest_articles(type):
 
 
 # 定时执行的时间间隔（以秒为单位）
-interval = 60
+interval = 600
 while True:
     # 获取所有类型的文章
     all_articles = get_all_articles()

@@ -6,6 +6,7 @@ from langchain.prompts import PromptTemplate
 from langchain.chat_models import ChatOpenAI
 from .prompt import template
 from langchain.chains import LLMRequestsChain, LLMChain
+from langchain.memory import ChatMessageHistory
 import nltk,os,json
 
 APIKEY="sb-29b8d019e623a4b6e4dbbbd0dff3d9b78cc8dffd7fab6248"
