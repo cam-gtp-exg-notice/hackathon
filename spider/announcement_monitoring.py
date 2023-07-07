@@ -1,7 +1,7 @@
 import csv
 import binance
 import json
-
+import time
 import requests
 
 
@@ -56,28 +56,43 @@ def read_cvs(type):
 
     return articleNames
 
+
+def latest_articles(type):
+    print('--------------------------------')
+
+    existsArticleNames = read_cvs(type)
+    articles = []
+    for item in all_articles:
+        if item['catalogId'] == int(navId):
+            articles = item['articles']
+    # # 过滤掉已经存在的文章
+    articles = list(filter(lambda x: x['title'] not in existsArticleNames, articles))
+    if len(articles) == 0:
+        print(binance.dict_nav[navId] + '没有新文章')
+        return
+
+    articles = binance.generate_article_url(articles)
+    save_cvs(type, articles)
+    print('--------------------------------')
+    return articles
+
+
 if __name__ == "__main__":
-    # 获取所有类型的文章
-    all_articles = get_all_articles()
+    # 定时执行的时间间隔（以秒为单位）
+    interval = 60
+    while True:
+        # 获取所有类型的文章
+        all_articles = get_all_articles()
 
-    for navId in binance.dict_nav.keys():
-        print('--------------------------------')
-        type = binance.dict_nav[navId]
+        for navId in binance.dict_nav.keys():
+            type = binance.dict_nav[navId]
+            articles = latest_articles(type)
+            if articles is None:
+                continue
+            print(binance.dict_nav[navId] + '有新的文章：')
+            for article in articles:
+                print(article['title'], article['url'], article['releaseDate'])
+        # 等待指定的时间间隔
+        time.sleep(interval)
 
-        existsArticleNames = read_cvs(type)
-        articles = []
-        for item in all_articles:
-            if item['catalogId'] == int(navId):
-                articles = item['articles']
-        # # 过滤掉已经存在的文章
-        articles = list(filter(lambda x: x['title'] not in existsArticleNames, articles))
-        if len(articles) == 0:
-            print(binance.dict_nav[navId] + '没有新文章')
-            continue
 
-        articles = binance.generate_article_url(articles)
-        print(binance.dict_nav[navId] + '有新的文章：')
-        for article in articles:
-            print(article['title'], article['url'], article['releaseDate'])
-        save_cvs(type, articles)
-        print('--------------------------------')
