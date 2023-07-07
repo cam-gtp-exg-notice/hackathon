@@ -4,7 +4,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain import OpenAI
 from langchain.prompts import PromptTemplate
 from langchain.chat_models import ChatOpenAI
-#from langchain.llms import OpenAI
+from .prompt import template
 from langchain.chains import LLMRequestsChain, LLMChain
 import nltk,os
 
@@ -49,26 +49,18 @@ def RunTxtReader():
 def GetJsonFromURL():
     llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0)
 
-    template = """在 >>> 和 <<< 之间是网页的返回的HTML内容。
-    请抽取参数请求的信息。
-
-    >>> {requests_result} <<<
-    请使用如下的JSON格式返回数据
-    {{
-      "时间":"a",
-      "调整内容":"b",
-      "接口":"c"
-    }}
-    Extracted:"""
 
     prompt = PromptTemplate(
         input_variables=["requests_result"],
-        template=template
+        template=template.URLTemplate
     )
 
     chain = LLMRequestsChain(llm_chain=LLMChain(llm=llm, prompt=prompt))
     inputs = {
-      "url": "https://www.binance.com/zh-CN/support/announcement/%E5%85%B3%E4%BA%8E%E8%B0%83%E6%95%B4rest-api%E6%8E%A5%E5%8F%A3%E8%AF%B7%E6%B1%82%E6%9D%83%E9%87%8D%E7%9A%84%E5%85%AC%E5%91%8A-f3d75a44fc7b4610b080b9c3499ed075"
+        # "url": "https://www.binance.com/en/support/announcement/notice-on-adjusting-the-request-weight-of-rest-api-endpoints-f3d75a44fc7b4610b080b9c3499ed075"
+        # "url": "https://www.binance.com/zh-CN/support/announcement/%E5%B8%81%E5%AE%89%E9%80%90%E4%BB%93%E6%9D%A0%E6%9D%86%E6%96%B0%E5%A2%9Exvg%E8%B5%84%E4%BA%A7-580de383967f459ba1306d67886d5978"
+        # "url": "https://www.binance.com/en/support/announcement/updates-to-api-services-654c092a2a2347bdb5ccd6faa0c6c039"
+        "url":"https://www.binance.com/zh-CN/support/announcement/api%E6%9C%8D%E5%8A%A1%E6%9B%B4%E6%96%B0%E5%85%AC%E5%91%8A-654c092a2a2347bdb5ccd6faa0c6c039"
     }
 
     response = chain(inputs)
