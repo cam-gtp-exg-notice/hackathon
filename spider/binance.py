@@ -53,11 +53,11 @@ def get_items(url, navId):
 
 
 # 获取列表的文章信息
-def get_articles(navId):
+def get_articles(navId, start, end):
     target ='https://www.binance.com/bapi/composite/v1/public/cms/article/list/query?type=1&pageSize=20&pageNo='
     # 新建数组
     articles = []
-    for i in range(1, 60):
+    for i in range(start, end):
         url = target + str(i)
         print(url)
         items = get_items(url, navId)
@@ -68,7 +68,6 @@ def get_articles(navId):
         for item in items:
             # 判断是否是2023年以后的文章
             if item['releaseDate'] < 1672502400000:
-                print('已经是2023年以后的文章，不再获取', item['releaseDate'])
                 flag = True
                 continue
             articles.append(item)
@@ -155,11 +154,10 @@ def get_content(article, navId):
          save_txt(navId, article['title'], element.text, article['releaseDate'])
     time.sleep(5)
 
-
 if __name__ == "__main__":
     for navId in dict_nav.keys():
         existsArticleNames = get_article_names(navId)
-        articles = get_articles(navId)
+        articles = get_articles(navId, 1, 60)
         # 过滤掉已经存在的文章
         articles = list(filter(lambda x: x['title'].replace('/', '') not in existsArticleNames, articles))
         if len(articles) == 0:
