@@ -1,254 +1,168 @@
-import asyncio
-import base64
-import hashlib
-import hmac
 import json
-import logging
 import os
-import socket
-import time
-import aiohttp
-from json import JSONDecodeError
+from datetime import datetime, timedelta
+from io import BufferedReader
+from typing import Any, Literal, TypeAlias
 
 import requests
+from loguru import logger
 
-WEBHOOK = "https://open.feishu.cn/open-apis/bot/v2/hook/b3eee09e-5d96-4d33-9bb5-494d84fd4066"
-SECRET = "fiwreEzBbiCVeTcahmxFpb"
-APP_ID = "cli_a1dbc9d87479d00e"
-APP_SECRET = "EjMMpzkbqhSD0XMnHwwWPcdjPZUpiGOY"
+TENANT_TOKEN_API = "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal"
+USER_ID_API = "https://open.feishu.cn/open-apis/contact/v3/users/batch_get_id"
+MESSAGE_API = "https://open.feishu.cn/open-apis/im/v1/messages"
+UPLOAD_IMAGE_API = "https://open.feishu.cn/open-apis/im/v1/images"
+UPLOAD_FILE_API = "https://open.feishu.cn/open-apis/im/v1/files"
+
+APP_ID = "cli_a42d12bb897c900e"
+APP_SECRET = "hatd45fhjdQRrB5vtzgYGfvur3p0QnAV"
+# open_id of user who will receive the message
+OPEN_ID = "oc_57c0d4147cccf01a7d3329ea79066c98"
+
+ENABLE = True if all(
+    (APP_ID, APP_SECRET, OPEN_ID)
+) else False
+
+if not ENABLE:
+    logger.warning(
+        f"{APP_ID=} or {APP_SECRET=} is not set, feishu bot is unavailable."
+    )
+
+FileStream: TypeAlias = BufferedReader | bytes | bytearray
+File: TypeAlias = str | FileStream
+FileType: TypeAlias = Literal["opus", "mp4", "pdf", "doc", "xls", "ppt", "stream"]
+MsgType: TypeAlias = Literal["text", "image", "audio", "media", "file", "interactive"]
 
 
-def is_not_null_and_blank_str(content):
-    """
-    非空字符串
-    :param content: 字符串
-    :return: 非空 - True，空 - False
-    """
-    if content and content.strip():
-        return True
-    else:
-        return False
+def _post(url: str, token: str = "", **kwargs) -> dict:
+    if "headers" not in kwargs:
+        kwargs["headers"] = {"Content-Type": "application/json"}
+    if token:
+        kwargs["headers"]["authorization"] = f"Bearer {token}"
+    resp = requests.post(url, **kwargs).json()
+    if resp["code"]:
+        raise Exception(f"Message failed: {resp['msg']}")
+    return resp
 
 
-class FeiShuMessagePusher(object):
+class TenantToken:
+    def __init__(self) -> None:
+        self.token = ""
+        self.expire_at = datetime.now()
 
-    def __init__(self, webhook=WEBHOOK, secret=SECRET, pc_slide=False, fail_notice=False):
-        """
-        机器人初始化
-        :param webhook: 飞书群自定义机器人webhook地址
-        :param secret:  机器人安全设置页面勾选“加签”时需要传入的密钥
-        :param pc_slide:  消息链接打开方式，默认False为浏览器打开，设置为True时为PC端侧边栏打开
-        :param fail_notice:  消息发送失败提醒，默认为False不提醒，开发者可以根据返回的消息发送结果自行判断和处理
-        """
-        timestamp = int(time.time())
-        sign = gen_sign(timestamp, secret)
-        super(FeiShuMessagePusher, self).__init__()
-        self.headers = {'Content-Type': 'application/json; charset=utf-8'}
-        self.time_stamp = timestamp
-        self.webhook = webhook
-        self.sign = sign
-        self.pc_slide = pc_slide
-        self.fail_notice = fail_notice
-
-    def send_text(self, msg):
-        """
-        消息类型为text类型
-        :param msg: 消息内容
-        :return: 返回消息发送结果
-        """
-        data = {"msg_type": "text"}
-        if is_not_null_and_blank_str(msg):  # 传入msg非空
-            data["timestamp"] = self.time_stamp
-            data["sign"] = self.sign
-            data["content"] = {"text": msg}
-        else:
-            logging.error("text类型，消息内容不能为空！")
-            raise ValueError("text类型，消息内容不能为空！")
-
-        logging.debug('text类型：%s' % data)
-        return self.post(data)
-
-    def post(self, data):
-        """
-        发送消息（内容UTF-8编码）
-        :param data: 消息数据（字典）
-        :return: 返回消息发送结果
-        """
-        try:
-            post_data = json.dumps(data)
-            response = requests.post(self.webhook, headers=self.headers, data=post_data)
-        except requests.exceptions.HTTPError as exc:
-            logging.error("消息发送失败， HTTP error: %d, reason: %s" % (exc.response.status_code, exc.response.reason))
-            raise
-        except requests.exceptions.ConnectionError:
-            logging.error("消息发送失败，HTTP connection error!")
-            raise
-        except requests.exceptions.Timeout:
-            logging.error("消息发送失败，Timeout error!")
-            raise
-        except requests.exceptions.RequestException:
-            logging.error("消息发送失败, Request Exception!")
-            raise
-        else:
-            try:
-                result = response.json()
-            except JSONDecodeError:
-                logging.error("服务器响应异常，状态码：%s，响应内容：%s" % (response.status_code, response.text))
-                return {'errcode': 500, 'errmsg': '服务器响应异常'}
-            else:
-                logging.debug('发送结果：%s' % result)
-                # 消息发送失败提醒（errcode 不为 0，表示消息发送异常），默认不提醒，开发者可以根据返回的消息发送结果自行判断和处理
-                if self.fail_notice and result.get('errcode', True):
-                    time_now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
-                    error_data = {
-                        "msgtype": "text",
-                        "text": {
-                            "content": "[注意-自动通知]飞书机器人消息发送失败，时间：%s，原因：%s，请及时跟进，谢谢!" % (
-                                time_now, result['errmsg'] if result.get('errmsg', False) else '未知异常')
-                        },
-                        "at": {
-                            "isAtAll": False
-                        }
-                    }
-                    logging.error("消息发送失败，自动通知：%s" % error_data)
-                    requests.post(self.webhook, headers=self.headers, data=json.dumps(error_data))
-                return result
-
-    def send_msg_with_at(self, msg, key, value, webhook=WEBHOOK):
-        """
-        消息类型为post类型, 发送富文本消息，并且@open_id对应的用户
-        :param key: "email", "name"
-        :param value: key对应的搜索值
-        :param msg: 消息内容
-        :return: 返回消息发送结果
-        """
-        self.webhook = webhook
-        data = {"msg_type": "post"}
-        if is_not_null_and_blank_str(msg):  # 传入msg非空
-            open_id = asyncio.get_event_loop().run_until_complete(key_to_open_id(key, value))
-            data["timestamp"] = self.time_stamp
-            data["sign"] = self.sign
-            data["content"] = {
-                "post": {
-                    "zh_cn": {
-                        "title": "CAM",
-                        "content": [
-                            [
-                                {
-                                    "tag": "text",
-                                    "text": msg + " "
-                                },
-                                {
-                                    "tag": "at",
-                                    "user_id": open_id,
-                                    "user_name": "tom"
-                                }
-                            ]
-                        ]
-                    },
-                },
+    def request_token(self):
+        resp = _post(
+            TENANT_TOKEN_API, json={
+                "app_id": APP_ID,
+                "app_secret": APP_SECRET
             }
-        else:
-            logging.error("post类型，消息内容不能为空！")
-            raise ValueError("post类型，消息内容不能为空！")
+        )
+        self.token = resp["tenant_access_token"]
+        self.expire_at = timedelta(seconds=resp["expire"]) + datetime.now()
 
-        logging.debug('post类型：%s' % data)
-        return self.post(data)
+    def __get__(self, instance, owner) -> str:
+        if not self.token or self.expire_at < datetime.now():
+            self.request_token()
+        return self.token
 
-
-class G:
-    token_expire_time = time.time() - 10
-    tenant_access_token = ""
-    all_users = []
-    key_ids_map = {}
-    users_update_time = time.time() - 700
+    def __set__(self, instance, value):
+        raise AttributeError("TenantToken is read-only")
 
 
-async def get_tenant_access_token(api_key=None, api_secret=None):
-    if time.time() < G.token_expire_time:
-        return G.tenant_access_token
-    url = "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal/"
-    headers = {
-        "Content-Type": "application/json"
-    }
-    if api_key is None:
-        api_key = APP_ID
-    if api_secret is None:
-        api_secret = APP_SECRET
-    req_body = {
-        "app_id": api_key,
-        "app_secret": api_secret
-    }
+class FeiShuBot:
+    token = TenantToken()
 
-    # data = bytes(json.dumps(req_body), encoding='utf8')
-    async with aiohttp.ClientSession() as sess:
-        async with sess.request(method='POST', url=url, headers=headers, json=req_body) as resp:
-            if resp.status == 200:
-                result = await resp.json()
-                if result.get('code', -1) == 0:
-                    access_token = result.get("tenant_access_token", "")
-                    expire_in_seconds = result.get("expire", 600)
-                    G.token_expire_time = time.time() + expire_in_seconds - 60
-                    G.tenant_access_token = access_token
-                    return access_token
-    return ""
+    def __init__(self) -> None:
+        if not ENABLE:
+            return
+        self.user_id = OPEN_ID
 
+    def __getattribute__(self, __name: str) -> Any:
+        """Disable all methods when enable is False"""
+        if ENABLE:
+            return super().__getattribute__(__name)
+        if __name == "token":
+            return ""
 
-async def get_users(page_token=None):
-    url = "https://open.feishu.cn/open-apis/ehr/v1/employees?view=full"
+        def wrap(*args, **kwargs):
+            logger.warning(f"FeiShuBot is disabled, {__name} is unavailable.")
 
-    access_token = await get_tenant_access_token()
-    if access_token == '':
-        return []
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + access_token
-    }
-    params = {'page_size': 100}
-    if page_token is not None:
-        params['page_token'] = page_token
-    async with aiohttp.ClientSession() as sess:
-        async with sess.request(method='GET', url=url, headers=headers, params=params) as resp:
-            if resp.status == 200:
-                result = await resp.json()
-                if result['code'] == 0:
-                    if result['data']['has_more']:
-                        more_users, err = await get_users(result['data']['page_token'])
-                        if err is None:
-                            return result['data']['items'] + more_users, None
-                    return result['data']['items'], None
-            try:
-                error = await resp.json()
-                return [], error
-            except:
-                return [], {'status': resp.status}
+        return wrap
 
+    def _send_message(self, msg_type: MsgType, content: dict) -> dict:
+        # TODO: message card
+        return _post(
+            MESSAGE_API,
+            self.token,
+            params={"receive_id_type": "chat_id"},
+            json={
+                "receive_id": self.user_id,
+                "msg_type": msg_type,
+                "content": json.dumps(content)
+            }
+        )
 
-async def key_to_open_id(key, value):
-    if time.time() - G.users_update_time > 600:
-        users, error = await get_users()
-        if error is None:
-            G.all_users = users
-        G.users_update_time = time.time()
-    if value in G.key_ids_map:
-        return G.key_ids_map.get(value, '')
-    for user in G.all_users:
-        G.key_ids_map[user['system_fields'][key]] = user['user_id']
-    return G.key_ids_map.get(value, '')
+    def send_text(self, msg: str) -> dict:
+        """send text message
+
+        Args:
+            msg(str): message to be sent
+        """
+        return self._send_message("text", {"text": msg})
+
+    def send_card(self, message: str, header: str = ""):
+        """Send feishu card message, only support markdown format now.
+
+        Refer to https://open.feishu.cn/document/ukTMukTMukTM/uADOwUjLwgDM14CM4ATN
+
+        Args:
+            message(str): markdown message to be sent
+            header(str): card header, default is empty
+        """
+
+        title = message["title"]
+        summary = message['summary']
+        api = message['API']
+        score = message["score"]
+        time = message["time"]
+        url = message["url"]
 
 
-def gen_sign(timestamp, secret):
-    # 拼接timestamp和secret
-    string_to_sign = '{}\n{}'.format(timestamp, secret)
-    hmac_code = hmac.new(string_to_sign.encode("utf-8"), digestmod=hashlib.sha256).digest()
-
-    # 对结果进行base64处理
-    sign = base64.b64encode(hmac_code).decode('utf-8')
-
-    return sign
+        content = {
+            "config": {"wide_screen_mode": True},
+            "elements": [
+                {"tag": "div", "text": {"tag": "lark_md", "content": f"{title}"}},
+                {"tag": "hr"},
+                {"tag": "div", "text": {"tag": "lark_md", "content": f"**总结**\n{summary}"}},
+                 {"tag": "column_set", "flex_mode": "none", "background_style": "default",
+                  "columns": [
+                  {"tag": "column", "width": "weighted", "weight": 1, "vertical_align": "top", "elements": [
+                      {"tag": "column_set", "flex_mode": "none", "background_style": "grey",
+                       "columns": [{"tag": "column", "width": "weighted", "weight": 1, "vertical_align": "top",
+                                    "elements": [{"tag": "markdown", "content": f"**分数**\n{score}"}]},
+                                   {"tag": "column", "width": "weighted", "weight": 1, "vertical_align": "top",
+                                    "elements": [{"tag": "markdown", "content": f"**时间**\n{time}"}]}]},
+                      {"tag": "hr"}]}]},
+                         {"tag": "action", "actions": [{"tag": "button", "text": {"tag": "plain_text", "content": "交易所公告链接"},"type": "primary", "multi_url": {"url": f"{url}"}}]}],
+        }
+        if header:
+            content["header"] = {"title": {"tag": "plain_text", "content": header}, "template": "blue"}
+        self._send_message("interactive", content)
 
 
 if __name__ == '__main__':
-    message = '这是一个测试：{}在{}环境启动了 {} ({})'.format(os.getlogin(), socket.gethostname(), "test", "wsqigo/test")
-    print(FeiShuMessagePusher().send_msg_with_at(message, "email", "wsqigo@1token.trade"))
-    print(FeiShuMessagePusher().send_text(message))
+    bot = FeiShuBot()
+    # bot.send_text("This is a test message")
+    data = {
+        "title": "Binance Margin Will Delist the ATA/BUSD, FORTH/BUSD, JST/BUSD, QTUM/BUSD, SUN/BUSD, ZEN/BUSD & ZRX/BUSD Isolated Margin Pairs",
+        "summary": "Binance Margin will delist the ATA/BUSD, FORTH/BUSD, JST/BUSD, QTUM/BUSD, SUN/BUSD, ZEN/BUSD and ZRX/BUSD isolated margin pairs. Users are advised to close their positions and transfer their assets from Margin Wallets to Spot Wallets before the cessation of margin trading.",
+        "API": "",
+        "score": 70,
+        "time": "2023-07-07 04:10",
+        "url": "https://www.binance.com/en/support/announcement/binance-margin-will-delist-the-ata-busd-forth-busd-jst-busd-qtum-busd-sun-busd-zen-busd-zrx-busd-isolated-margin-pairs-1b4044db45834ae6b367e12ac776215c"
+    }
+
+    keys = data.keys()
+
+    for key in keys:
+        print(f"{data[key]}")
+    bot.send_card(data, header="交易所公告信息")

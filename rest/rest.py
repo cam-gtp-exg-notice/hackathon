@@ -24,8 +24,8 @@ def json_request():
     ret['url'] = json_d['url']
     s = json.dumps(ret)
     decoded = bytes(s, 'utf-8').decode('unicode_escape')
-    fs = feishu.FeiShuMessagePusher()
-    fs.send_text(decoded)
+    fs = feishu.FeiShuBot()
+    fs.send_card(ret)
     return decoded
 
 def RunRest():
