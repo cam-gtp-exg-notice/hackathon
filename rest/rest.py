@@ -1,4 +1,6 @@
 from flask import Flask,request
+from notify import feishu
+from gpt import demo
 import json
 
 app = Flask(__name__)
@@ -11,9 +13,14 @@ def home():
 def json_request():
     d = request.get_data()
     print("get data",d)
-    json_re = json.loads(d)
-    print(json_re)
-    return json_re
+    json_d = json.loads(d)
+    print(json_d)
+    out = demo.GetJsonFromURL(json_d['url'])
+    ret = json.loads(out)
+    ret['url'] = json_d['url']
+    fs = feishu.FeiShuMessagePusher()
+    fs.send_text(json.dumps(ret))
+    return json_d
 
 def RunRest():
     print("here run rest")

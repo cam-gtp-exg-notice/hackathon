@@ -13,7 +13,7 @@ def get_all_articles():
         'Referer': f'https://www.binance.com/zh-CN/support/announcement/'
     }
     # 使用的代理ip地址
-    proxy = {"https": '127.0.0.1:7890'}
+    proxy = {"https": '127.0.0.1:10807'}
     req = requests.get(url=url, headers=headers, proxies=proxy)
     # 判断结果200
     if req.status_code != 200:
@@ -77,22 +77,21 @@ def latest_articles(type):
     return articles
 
 
-if __name__ == "__main__":
-    # 定时执行的时间间隔（以秒为单位）
-    interval = 60
-    while True:
-        # 获取所有类型的文章
-        all_articles = get_all_articles()
+# 定时执行的时间间隔（以秒为单位）
+interval = 60
+while True:
+    # 获取所有类型的文章
+    all_articles = get_all_articles()
 
-        for navId in binance.dict_nav.keys():
-            type = binance.dict_nav[navId]
-            articles = latest_articles(type)
-            if articles is None:
-                continue
-            print(binance.dict_nav[navId] + '有新的文章：')
-            for article in articles:
-                print(article['title'], article['url'], article['releaseDate'])
-        # 等待指定的时间间隔
-        time.sleep(interval)
-
-
+    for navId in binance.dict_nav.keys():
+        type = binance.dict_nav[navId]
+        articles = latest_articles(type)
+        if articles is None:
+            continue
+        print(binance.dict_nav[navId] + '有新的文章：')
+        for article in articles:
+            dd = {"title":article['title'], "url":article['url']}
+            req = requests.post(url="http://127.0.0.1:9999/json",data=json.dumps(dd))
+            print(article['title'], article['url'], article['releaseDate'])
+    # 等待指定的时间间隔
+    time.sleep(interval)

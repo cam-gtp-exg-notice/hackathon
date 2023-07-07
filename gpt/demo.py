@@ -8,16 +8,19 @@ from .prompt import template
 from langchain.chains import LLMRequestsChain, LLMChain
 import nltk,os
 
+APIKEY="sb-29b8d019e623a4b6e4dbbbd0dff3d9b78cc8dffd7fab6248"
+PROXY="http://127.0.0.1:10807"
+
 def RunLangChain():
     print("here run langchain")
-    os.environ["OPENAI_API_KEY"] = "sb-29b8d019e623a4b6e4dbbbd0dff3d9b78cc8dffd7fab6248"
-    os.environ.update(HTTP_PROXY="http://127.0.0.1:10807", HTTPS_PROXY="http://127.0.0.1:10807")
+    os.environ["OPENAI_API_KEY"] = APIKEY
+    os.environ.update(HTTP_PROXY=PROXY, HTTPS_PROXY=PROXY)
     #os.environ["OPENAI_PROXY"] = "http://127.0.0.1:10807"
     #nltk.set_proxy('http://127.0.0.1:10807')
     #nltk.download('punkt')
     #nltk.download('averaged_perceptron_tagger')
     #RunTxtReader()
-    GetJsonFromURL()
+    #GetJsonFromURL()
 
 def RunTxtReader():
     # 导入文本
@@ -46,7 +49,7 @@ def RunTxtReader():
     chain.run(split_documents[:5])
 
 
-def GetJsonFromURL():
+def GetJsonFromURL(url):
     llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0)
 
 
@@ -60,8 +63,10 @@ def GetJsonFromURL():
         # "url": "https://www.binance.com/en/support/announcement/notice-on-adjusting-the-request-weight-of-rest-api-endpoints-f3d75a44fc7b4610b080b9c3499ed075"
         # "url": "https://www.binance.com/zh-CN/support/announcement/%E5%B8%81%E5%AE%89%E9%80%90%E4%BB%93%E6%9D%A0%E6%9D%86%E6%96%B0%E5%A2%9Exvg%E8%B5%84%E4%BA%A7-580de383967f459ba1306d67886d5978"
         # "url": "https://www.binance.com/en/support/announcement/updates-to-api-services-654c092a2a2347bdb5ccd6faa0c6c039"
-        "url":"https://www.binance.com/zh-CN/support/announcement/api%E6%9C%8D%E5%8A%A1%E6%9B%B4%E6%96%B0%E5%85%AC%E5%91%8A-654c092a2a2347bdb5ccd6faa0c6c039"
+        #"url":"https://www.binance.com/zh-CN/support/announcement/api%E6%9C%8D%E5%8A%A1%E6%9B%B4%E6%96%B0%E5%85%AC%E5%91%8A-654c092a2a2347bdb5ccd6faa0c6c039"
+        "url":url
     }
 
     response = chain(inputs)
-    print(response['output'])
+    out = response['output']
+    return  out

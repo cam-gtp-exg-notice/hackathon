@@ -3,8 +3,9 @@ from gpt import demo
 from training import training
 from notify import notify
 
+
 if __name__ == "__main__":
-    training.RunTraining()
+    #training.RunTraining()
     demo.RunLangChain()
-    notify.RunNotify()
+    #notify.RunNotify()
     rest.RunRest()
