@@ -18,7 +18,7 @@ import os
 
 os.environ.update(HTTPS_PROXY="http://127.0.0.1:7890")
 
-llm = OpenAI(model_name="gpt-3.5-turbo", temperature=1)
+llm = OpenAI(model_name="gpt-3.5-turbo", temperature=0.9)
 
 prompt = PromptTemplate(
     input_variables=["requests_result"],
