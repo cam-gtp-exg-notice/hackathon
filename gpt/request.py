@@ -13,13 +13,13 @@ def Request():
 from langchain.prompts import PromptTemplate
 from langchain.llms import OpenAI
 from langchain.chains import LLMRequestsChain, LLMChain
-import prompt.template
+from prompt.template import URLTemplate
 
 llm = OpenAI(model_name="gpt-3.5-turbo", temperature=0)
 
 prompt = PromptTemplate(
     input_variables=["requests_result"],
-    template=template.URLTemplate
+    template=URLTemplate
 )
 
 chain = LLMRequestsChain(llm_chain=LLMChain(llm=llm, prompt=prompt))
