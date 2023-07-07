@@ -11,6 +11,7 @@ import nltk,os
 def RunLangChain():
     print("here run langchain")
     os.environ["OPENAI_API_KEY"] = "sb-29b8d019e623a4b6e4dbbbd0dff3d9b78cc8dffd7fab6248"
+    os.environ.update(HTTP_PROXY="http://127.0.0.1:10807", HTTPS_PROXY="http://127.0.0.1:10807")
     #os.environ["OPENAI_PROXY"] = "http://127.0.0.1:10807"
     #nltk.set_proxy('http://127.0.0.1:10807')
     #nltk.download('punkt')
@@ -49,20 +50,14 @@ def GetJsonFromURL():
     llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0)
 
     template = """在 >>> 和 <<< 之间是网页的返回的HTML内容。
-    网页是新浪财经A股上市公司的公司简介。
     请抽取参数请求的信息。
 
     >>> {requests_result} <<<
     请使用如下的JSON格式返回数据
     {{
-      "company_name":"a",
-      "company_english_name":"b",
-      "issue_price":"c",
-      "date_of_establishment":"d",
-      "registered_capital":"e",
-      "office_address":"f",
-      "Company_profile":"g"
-
+      "时间":"a",
+      "调整内容":"b",
+      "接口":"c"
     }}
     Extracted:"""
 
@@ -73,7 +68,7 @@ def GetJsonFromURL():
 
     chain = LLMRequestsChain(llm_chain=LLMChain(llm=llm, prompt=prompt))
     inputs = {
-      "url": "https://vip.stock.finance.sina.com.cn/corp/go.php/vCI_CorpInfo/stockid/600519.phtml"
+      "url": "https://www.binance.com/zh-CN/support/announcement/%E5%85%B3%E4%BA%8E%E8%B0%83%E6%95%B4rest-api%E6%8E%A5%E5%8F%A3%E8%AF%B7%E6%B1%82%E6%9D%83%E9%87%8D%E7%9A%84%E5%85%AC%E5%91%8A-f3d75a44fc7b4610b080b9c3499ed075"
     }
 
     response = chain(inputs)
