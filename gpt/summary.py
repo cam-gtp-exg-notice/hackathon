@@ -17,7 +17,10 @@ output_parser = StructuredOutputParser.from_response_schemas(response_schemas)
 format_instructions = output_parser.get_format_instructions()
 
 template = """
-As a blockchain developer and trader, you need to stay up-to-date with exchange announcement changes and rate them based on their importance, on a scale of 0 to 100, with higher scores indicating higher importance. Generate an announcement summary and corresponding score based on the input exchange announcement.
+As a blockchain developer and trader, you need to stay up-to-date with exchange announcement changes and rate them based on their importance, 
+on a scale of 0 to 100, with higher scores indicating higher importance. 
+Generate an announcement summary and corresponding score based on the input exchange announcement.
+Please use concise descriptions in the announcement summary.
 
 % USER INPUT:
 {user_input}
