@@ -12,8 +12,8 @@ from json import JSONDecodeError
 
 import requests
 
-WEBHOOK = "https://open.feishu.cn/open-apis/bot/v2/hook/bdc1b1de-0f1b-4224-b1d2-ee5ca77a4557"
-SECRET = "XutEMX6VbHpvskqbHFQwTh"
+WEBHOOK = "https://open.feishu.cn/open-apis/bot/v2/hook/b3eee09e-5d96-4d33-9bb5-494d84fd4066"
+SECRET = "fiwreEzBbiCVeTcahmxFpb"
 APP_ID = "cli_a1dbc9d87479d00e"
 APP_SECRET = "EjMMpzkbqhSD0XMnHwwWPcdjPZUpiGOY"
 
