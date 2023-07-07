@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-def RunLangChain():
-    print("here run langchain")
-=======
 from langchain.document_loaders import UnstructuredFileLoader
 from langchain.chains.summarize import load_summarize_chain
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -82,4 +78,3 @@ def GetJsonFromURL():
 
     response = chain(inputs)
     print(response['output'])
->>>>>>> main
