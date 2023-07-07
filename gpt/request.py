@@ -27,7 +27,7 @@ prompt = PromptTemplate(
 
 chain = LLMRequestsChain(llm_chain=LLMChain(llm=llm, prompt=prompt))
 inputs = {
-  "url": "https://www.binance.com/zh-CN/support/announcement/%E5%B8%81%E5%AE%89%E5%90%88%E7%BA%A6%E5%B0%86%E8%B0%83%E6%95%B4storjusdt-u%E6%9C%AC%E4%BD%8D%E6%B0%B8%E7%BB%AD%E5%90%88%E7%BA%A6%E6%9D%A0%E6%9D%86%E5%92%8C%E4%BF%9D%E8%AF%81%E9%87%91%E9%98%B6%E6%A2%AF%E5%8F%8A%E8%B5%84%E9%87%91%E8%B4%B9%E7%8E%87%E4%B8%8A%E9%99%90-50eb47de435f4313b09615c3c2c68bb8"
+  "url": "https://www.binance.com/zh-CN/support/announcement/api%E6%9C%8D%E5%8A%A1%E6%9B%B4%E6%96%B0%E5%85%AC%E5%91%8A-654c092a2a2347bdb5ccd6faa0c6c039"
 }
 
 response = chain(inputs)
