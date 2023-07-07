@@ -140,15 +140,33 @@ class FeiShuBot:
                 {"tag": "div", "text": {"tag": "lark_md", "content": f"{title}"}},
                 {"tag": "hr"},
                 {"tag": "div", "text": {"tag": "lark_md", "content": f"**总结**\n{summary}\n{api}"}},
+
                  {"tag": "column_set", "flex_mode": "none", "background_style": "default",
                   "columns": [
                   {"tag": "column", "width": "weighted", "weight": 1, "vertical_align": "top", "elements": [
                       {"tag": "column_set", "flex_mode": "none", "background_style": "grey",
                        "columns": [{"tag": "column", "width": "weighted", "weight": 1, "vertical_align": "top",
-                                    "elements": [{"tag": "markdown", "content": f"**分数**\n{score}"}]},
-                                   {"tag": "column", "width": "weighted", "weight": 1, "vertical_align": "top",
-                                    "elements": [{"tag": "markdown", "content": f"**时间**\n{time}"}]}]},
-                      {"tag": "hr"}]}]},
+                                    "elements": [{"tag": "markdown", "content": f"💡 **分数**\n<font color='{template}'>**{score}**</font>", "text_align": "center"}]}
+                                   ]}]},
+
+                      {
+                          "tag": "column",
+                          "width": "weighted",
+                          "weight": 1,
+                          "vertical_align": "top",
+                          "elements": [
+                              {
+                                  "tag": "column_set",
+                                  "flex_mode": "none",
+                                  "background_style": "grey",
+                                  "columns": [
+                                      {"tag": "column", "width": "weighted", "weight": 1, "vertical_align": "top",
+                                       "elements": [{"tag": "markdown", "content": f"🕐 **时间**\n{time}", "text_align": "center"}]}
+                                  ]
+                              }
+                          ]
+                      }]},
+                {"tag": "hr"},
                          {"tag": "action", "actions": [{"tag": "button", "text": {"tag": "plain_text", "content": "交易所公告链接"},"type": "primary", "multi_url": {"url": f"{url}"}}]}],
         }
         if header:
@@ -165,7 +183,7 @@ if __name__ == '__main__':
         "title": "Binance Margin Will Delist the ATA/BUSD, FORTH/BUSD, JST/BUSD, QTUM/BUSD, SUN/BUSD, ZEN/BUSD & ZRX/BUSD Isolated Margin Pairs",
         "summary": "Binance Margin will delist the ATA/BUSD, FORTH/BUSD, JST/BUSD, QTUM/BUSD, SUN/BUSD, ZEN/BUSD and ZRX/BUSD isolated margin pairs. Users are advised to close their positions and transfer their assets from Margin Wallets to Spot Wallets before the cessation of margin trading.",
         "API": "",
-        "score": 70,
+        "score": 50,
         "time": "2023-07-07 04:10",
         "url": "https://www.binance.com/en/support/announcement/binance-margin-will-delist-the-ata-busd-forth-busd-jst-busd-qtum-busd-sun-busd-zen-busd-zrx-busd-isolated-margin-pairs-1b4044db45834ae6b367e12ac776215c"
     }
