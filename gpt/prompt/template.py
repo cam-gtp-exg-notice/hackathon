@@ -13,25 +13,32 @@ Output format: {format_instructions}
 YOUR RESPONSE:
 """
 
-URLTemplate = """在 >>> 和 <<< 之间是网页的返回的HTML内容的总结和评分。
-<<<<<<< HEAD
-网页是币安发布的公告。作为一个区块链开发者和交易员，需要对公告内容进行区分，并根据以下的标准进行打分，最高100分。
-公告重要性评判标准：API更新公告非常重要>90，交易对上新公告和交易对下架公告比较重要>70,这些交易对只需要包括现货，合约和期权三种类型即可,费率调整公告一般重要>60，理财公告稍微重要>40，交易所活动公告不重要>20，请根据这个标准打分。
-如果是交易所API变动，请提取受影响的API列表。
-请在公告总结中使用尽可能简练的描述。
-=======
-作为一个区块链开发者和交易员，需要对公告内容进行区分，并根据以下的标准进行打分，最高100分。
-公告重要性评判标准：API更新中资产、账户相关接口变动公告大于90分，API更新中其他接口变动、交易对上新和交易对下架公告大于70分，费率调整公告大于60分，理财公告大于40分，交易所活动公告大于20分，请根据这个标准打分。
-如果是交易所API变动，请提取受影响的API列表，否则API字段为空。
-请在summary字段中使用尽可能简练的语言进行总结。
->>>>>>> faf496e (modify prompt)
+# URLTemplate = """在 >>> 和 <<< 之间是网页的返回的HTML内容的总结和评分。
+# 作为区块链开发者和交易员，我们根据以下标准对公告进行评分：API更新中资产、账户相关接口变动公告大于90分，API更新中其他接口变动、交易对上新和下架公告大于70分，费率调整公告大于60分，理财公告大于40分，交易所活动公告大于20分。如果是交易所API变动，我们会提取受影响的API列表。
+# 根据这些标准，请给出了公告的评分和总结。
+
+# >>> {requests_result} <<<
+# 请使用如下的JSON格式返回数据
+# {{
+#   "title": "公告标题",
+#   "summary": "公告内容简述总结",
+#   "API": "受影响的API列表",
+#   "score": 评分结果（0-100分）,
+#   "time": "公告发布时间",
+# }}
+# Extracted:"""
+
+URLTemplate="""Between >>> and <<< is the summary and score of the HTML content returned by a webpage.
+As a blockchain developer and trader, we evaluate announcements based on the following criteria: API updates related to assets and accounts receive a score of over 90, API updates related to other interfaces, new trading pairs, and delisting announcements receive a score of over 70, fee adjustment announcements receive a score of over 60, financial management announcements receive a score of over 40, and exchange activity announcements receive a score of over 20. 
+If it is an exchange API update, we will extract the affected API list.
+Based on these criteria, please provide the score and summary of the announcement.
 
 >>> {requests_result} <<<
-请使用如下的JSON格式返回数据
+Please use the following JSON format to return the data:
 {{
-  "title": "anancement title",
-  "summary": "Exchange announcement text summary",
-  "API": "affected API list",
+  "title": "announcement title",
+  "summary": "Exchange announcement text summary, use concise descriptions",
+  "API": "affected API list, empty if no affected",
   "score": A score between 0 to 100,
   "time": "announcement time",
 }}
