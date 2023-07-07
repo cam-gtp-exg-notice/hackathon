@@ -36,6 +36,7 @@ API updates related to other interfaces, new trading pairs, and delisting announ
 fee adjustment announcements: score 60-70.
 financial management announcements: score 40-60.
 exchange activity announcements: score 20-40.
+others: 0~20.
 
 If it is an exchange API update, we will extract the affected API list.
 Based on these criteria, please provide the score and summary of the announcement.
