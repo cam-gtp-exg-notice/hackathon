@@ -146,6 +146,8 @@ class FeiShuBot:
         }
         if header:
             content["header"] = {"title": {"tag": "plain_text", "content": header}, "template": "blue"}
+        else:
+            content["header"] = {"title": {"tag": "plain_text", "content": "交易所公告信息"}, "template": "blue"}
         self._send_message("interactive", content)
 
 
