@@ -222,7 +222,6 @@ async def get_users(page_token=None):
                 return [], error
             except:
                 return [], {'status': resp.status}
-    return [], {'message': 'connection error'}
 
 
 async def key_to_open_id(key, value):
