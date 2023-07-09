@@ -31,13 +31,13 @@ YOUR RESPONSE:
 URLTemplate="""Between >>> and <<< is the HTML content returned by a webpage.
 As a blockchain developer and trader, we evaluate announcement strictly based on the following criteria:
 
-API updates announcement related to assets and accounts: score 90 to 100 points.
-API updates related to other interfaces: score 70 to 90 points.
-new trading pairs, new contracts, and delisting announcement: score 70 to 90 points.
-fee adjustment announcement: score 60 to 70 points.
-financial management announcement: score 40 to 60 points.
-exchange activity announcement: score 20 to 40 points.
-others: score 0 to 20 points.
+90-100: API updates announcement related to assets and accounts.
+80-90: API updates announcement related to other interfaces.
+70-80: launch new trading pairs announcement, launch new contract announcement or delisting announcement.
+60-70: fee adjustment announcement.
+40-60: financial management announcement.
+20-40: exchange activity announcement.
+0-20: others.
 
 If there is no affected APIs list in announcement, then it is not an API update announcement. 
 In case of an exchange API update, we will pull the list of affected APIs.

@@ -20,7 +20,7 @@ prompt = PromptTemplate(
 
 chain = LLMRequestsChain(llm_chain=LLMChain(llm=llm, prompt=prompt))
 inputs = {
-  "url": "https://www.binance.com/zh-CN/support/announcement/%E5%B8%81%E5%AE%89vip%E5%92%8C%E6%B4%BB%E6%9C%9F%E5%80%9F%E5%B8%81%E5%B9%B3%E5%8F%B0%E6%96%B0%E5%A2%9E%E5%8F%AF%E5%80%9F%E8%B5%84%E4%BA%A7%E4%BB%A5%E5%8F%8A%E5%8F%AF%E8%B4%A8%E6%8A%BC%E8%B5%84%E4%BA%A7-2023-06-28-381724453dcb409fbd86a97323cb2a7f"
+  "url": "https://www.binance.com/en/support/announcement/notice-on-adjusting-the-request-weight-of-rest-api-endpoints-f3d75a44fc7b4610b080b9c3499ed075"
 }
 
 response = chain(inputs)
