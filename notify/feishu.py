@@ -129,45 +129,58 @@ class FeiShuBot:
         # 80+红，60-80黄，60-是绿
         if score >= 80:
             template = "red"
+            score = "高"
         elif score >= 60:
-            template = "yellow"
-        else:
             template = "green"
+            score = "中"
+        else:
+            template = "grey"
+            score = "低"
+        if api == "":
+            api = "无"
+        else:
+            api = api.replace(",", "\n")
 
         content = {
             "config": {"wide_screen_mode": True},
             "elements": [
-                {"tag": "div", "text": {"tag": "lark_md", "content": f"{title}"}},
+                {"tag": "div", "text": {"tag": "lark_md", "content": "<at id=all></at>"}},
+                {"tag": "div", "text": {"tag": "lark_md", "content": f"**{title}**"}},
                 {"tag": "hr"},
-                {"tag": "div", "text": {"tag": "lark_md", "content": f"**总结**\n{summary}\n{api}"}},
+                {"tag": "div", "text": {"tag": "lark_md", "content": f"**公告总结**\n{summary}\n❗️**受影响接口**\n**{api}**"}},
 
-                 {"tag": "column_set", "flex_mode": "none", "background_style": "default",
-                  "columns": [
-                  {"tag": "column", "width": "weighted", "weight": 1, "vertical_align": "top", "elements": [
-                      {"tag": "column_set", "flex_mode": "none", "background_style": "grey",
-                       "columns": [{"tag": "column", "width": "weighted", "weight": 1, "vertical_align": "top",
-                                    "elements": [{"tag": "markdown", "content": f"💡 **分数**\n<font color='{template}'>**{score}**</font>", "text_align": "center"}]}
-                                   ]}]},
+                {"tag": "column_set", "flex_mode": "none", "background_style": "default",
+                 "columns": [
+                     {"tag": "column", "width": "weighted", "weight": 1, "vertical_align": "top", "elements": [
+                         {"tag": "column_set", "flex_mode": "none", "background_style": "grey",
+                          "columns": [{"tag": "column", "width": "weighted", "weight": 1, "vertical_align": "top",
+                                       "elements": [{"tag": "markdown",
+                                                     "content": f"💡 **重要性**\n<font color='{template}'>**{score}**</font>",
+                                                     "text_align": "center"}]}
+                                      ]}]},
 
-                      {
-                          "tag": "column",
-                          "width": "weighted",
-                          "weight": 1,
-                          "vertical_align": "top",
-                          "elements": [
-                              {
-                                  "tag": "column_set",
-                                  "flex_mode": "none",
-                                  "background_style": "grey",
-                                  "columns": [
-                                      {"tag": "column", "width": "weighted", "weight": 1, "vertical_align": "top",
-                                       "elements": [{"tag": "markdown", "content": f"🕐 **时间**\n{time}", "text_align": "center"}]}
-                                  ]
-                              }
-                          ]
-                      }]},
+                     {
+                         "tag": "column",
+                         "width": "weighted",
+                         "weight": 1,
+                         "vertical_align": "top",
+                         "elements": [
+                             {
+                                 "tag": "column_set",
+                                 "flex_mode": "none",
+                                 "background_style": "grey",
+                                 "columns": [
+                                     {"tag": "column", "width": "weighted", "weight": 1, "vertical_align": "top",
+                                      "elements": [{"tag": "markdown", "content": f"🕐 **时间**\n{time}",
+                                                    "text_align": "center"}]}
+                                 ]
+                             }
+                         ]
+                     }]},
                 {"tag": "hr"},
-                         {"tag": "action", "actions": [{"tag": "button", "text": {"tag": "plain_text", "content": "交易所公告链接"},"type": "primary", "multi_url": {"url": f"{url}"}}]}],
+                {"tag": "action", "actions": [
+                    {"tag": "button", "text": {"tag": "plain_text", "content": "交易所公告链接"}, "type": "primary",
+                     "multi_url": {"url": f"{url}"}}]}],
         }
         if header:
             content["header"] = {"title": {"tag": "plain_text", "content": header}, "template": template}
@@ -182,8 +195,8 @@ if __name__ == '__main__':
     data = {
         "title": "Binance Margin Will Delist the ATA/BUSD, FORTH/BUSD, JST/BUSD, QTUM/BUSD, SUN/BUSD, ZEN/BUSD & ZRX/BUSD Isolated Margin Pairs",
         "summary": "Binance Margin will delist the ATA/BUSD, FORTH/BUSD, JST/BUSD, QTUM/BUSD, SUN/BUSD, ZEN/BUSD and ZRX/BUSD isolated margin pairs. Users are advised to close their positions and transfer their assets from Margin Wallets to Spot Wallets before the cessation of margin trading.",
-        "API": "",
-        "score": 50,
+        "API": "/test1,/test2",
+        "score": 90,
         "time": "2023-07-07 04:10",
         "url": "https://www.binance.com/en/support/announcement/binance-margin-will-delist-the-ata-busd-forth-busd-jst-busd-qtum-busd-sun-busd-zen-busd-zrx-busd-isolated-margin-pairs-1b4044db45834ae6b367e12ac776215c"
     }
