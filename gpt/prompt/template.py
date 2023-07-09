@@ -39,7 +39,8 @@ financial management announcements: score 40 to 60 points.
 exchange activity announcements: score 20 to 40 points.
 others: score 0 to 20 points.
 
-In case of an exchange API update, we will pull the list of affected APIs. If there is no API list, it is not an API update.
+If there is no affected APIs list in announcement, then it is not an API update announcement. 
+In case of an exchange API update, we will pull the list of affected APIs.
 Based on these criteria, please provide the score and summary of the announcement.
 
 >>> {requests_result} <<<
