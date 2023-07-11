@@ -144,7 +144,8 @@ class FeiShuBot:
         content = {
             "config": {"wide_screen_mode": True},
             "elements": [
-                {"tag": "div", "text": {"tag": "lark_md", "content": "<at id=all></at>"}},
+                # 暂时去掉@所有人： <at id=all></at>
+                {"tag": "div", "text": {"tag": "lark_md", "content": ""}},
                 {"tag": "div", "text": {"tag": "lark_md", "content": f"**{title}**"}},
                 {"tag": "hr"},
                 {"tag": "div", "text": {"tag": "lark_md", "content": f"**公告总结**\n{summary}\n❗️**受影响接口**\n**{api}**"}},

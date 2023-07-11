@@ -16,8 +16,8 @@ def get_all_articles():
         'Referer': f'https://www.binance.com/zh-CN/support/announcement/'
     }
     # 使用的代理ip地址
-    # proxy = {"https": '127.0.0.1:10807'}
-    req = requests.get(url=url, headers=headers)
+    proxy = {"https": '127.0.0.1:4780'}
+    req = requests.get(url=url, headers=headers, proxies=proxy)
     # 判断结果200
     if req.status_code != 200:
         print('请求失败', req.reason)
@@ -81,10 +81,16 @@ def latest_articles(type):
     print('--------------------------------')
     return articles
 
+# 初次启动时，先获取一次所有文章
+all_articles = get_all_articles()
+for navId in binance.dict_nav.keys():
+    type = binance.dict_nav[navId]
+    latest_articles(type)
+
 
 logging.info('开始文章爬取')
 # 定时执行的时间间隔（以秒为单位）
-interval = 600
+interval = 10
 while True:
     try:
         # 获取所有类型的文章
