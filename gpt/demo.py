@@ -6,19 +6,18 @@ from langchain.prompts import PromptTemplate
 from langchain.chat_models import ChatOpenAI
 from .prompt import template
 from langchain.chains import LLMRequestsChain, LLMChain
-from langchain.memory import ChatMessageHistory
 import nltk,os,json
 import openai
 
-APIKEY="sb-29b8d019e623a4b6e4dbbbd0dff3d9b78cc8dffd7fab6248"
-PROXY="http://127.0.0.1:10807"
-openai.api_base = 'https://api.openai-sb.com/v1'
+#APIKEY="sb-29b8d019e623a4b6e4dbbbd0dff3d9b78cc8dffd7fab6248"
+# PROXY="http://127.0.0.1:10807"
+#openai.api_base = 'https://api.openai-sb.com/v1'
 
 
 def RunLangChain():
     print("here run langchain")
-    os.environ["OPENAI_API_KEY"] = APIKEY
-    os.environ.update(HTTP_PROXY=PROXY, HTTPS_PROXY=PROXY)
+    #os.environ["OPENAI_API_KEY"] = APIKEY
+    # os.environ.update(HTTP_PROXY=PROXY, HTTPS_PROXY=PROXY)
     #os.environ["OPENAI_PROXY"] = "http://127.0.0.1:10807"
     #nltk.set_proxy('http://127.0.0.1:10807')
     #nltk.download('punkt')
