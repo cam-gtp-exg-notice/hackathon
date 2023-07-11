@@ -90,7 +90,7 @@ for navId in binance.dict_nav.keys():
 
 logging.info('开始文章爬取')
 # 定时执行的时间间隔（以秒为单位）
-interval = 10
+interval = 600
 while True:
     try:
         # 获取所有类型的文章
