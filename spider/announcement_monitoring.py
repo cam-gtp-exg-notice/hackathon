@@ -16,8 +16,8 @@ def get_all_articles():
         'Referer': f'https://www.binance.com/zh-CN/support/announcement/'
     }
     # 使用的代理ip地址
-    proxy = {"https": '127.0.0.1:4780'}
-    req = requests.get(url=url, headers=headers, proxies=proxy)
+    # proxy = {"https": '127.0.0.1:4780'}
+    req = requests.get(url=url, headers=headers)
     # 判断结果200
     if req.status_code != 200:
         print('请求失败', req.reason)
