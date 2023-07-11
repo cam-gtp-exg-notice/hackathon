@@ -1,5 +1,6 @@
 import csv
 import logging
+import os
 
 import binance
 import json
@@ -28,7 +29,6 @@ def get_all_articles():
 
 def save_cvs(type, articles):
     filename = f"{type}.csv"
-
     data = []
     for item in articles:
         data.append([item['title'], item['url'], item['releaseDate']])
@@ -43,6 +43,9 @@ def save_cvs(type, articles):
 
 def read_cvs(type):
     filename = f"{type}.csv"
+    # 判断文件是否存在
+    if not os.path.exists(filename):
+        return []
 
     with open(filename, "r", encoding="utf-8") as csvfile:
         reader = csv.reader(csvfile)
