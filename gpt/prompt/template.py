@@ -44,13 +44,13 @@ In case of an exchange API update, we will pull the list of affected APIs.
 Based on these criteria, please provide the score and summary of the announcement.
 
 >>> {requests_result} <<<
-Please translate title and summary into Chinese and use the following JSON format to return the data:
+Use the following JSON format to return the data:
 {{
-  "title": "announcement title",
-  "summary": "Exchange announcement text summary without title, use concise descriptions",
+  "title": "announcement title translated to Chinese",
+  "summary": "Exchange announcement text summary without title, use concise descriptions and translate to Chinese",
   "API": "affected API list, empty if no affected",
   "score": A score between 0 to 100,
   "reason": "give reason for scoring",
-  "time": "announcement time",
+  "time": "announcement time, with timezone set to UTC+0",
 }}
 Extracted:"""
