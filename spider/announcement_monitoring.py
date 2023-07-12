@@ -1,4 +1,7 @@
 import csv
+import logging
+import os
+
 import binance
 import json
 import time
@@ -13,8 +16,8 @@ def get_all_articles():
         'Referer': f'https://www.binance.com/zh-CN/support/announcement/'
     }
     # 使用的代理ip地址
-    proxy = {"https": '127.0.0.1:10807'}
-    req = requests.get(url=url, headers=headers, proxies=proxy)
+    # proxy = {"https": '127.0.0.1:4780'}
+    req = requests.get(url=url, headers=headers)
     # 判断结果200
     if req.status_code != 200:
         print('请求失败', req.reason)
@@ -26,7 +29,6 @@ def get_all_articles():
 
 def save_cvs(type, articles):
     filename = f"{type}.csv"
-
     data = []
     for item in articles:
         data.append([item['title'], item['url'], item['releaseDate']])
@@ -41,6 +43,9 @@ def save_cvs(type, articles):
 
 def read_cvs(type):
     filename = f"{type}.csv"
+    # 判断文件是否存在
+    if not os.path.exists(filename):
+        return []
 
     with open(filename, "r", encoding="utf-8") as csvfile:
         reader = csv.reader(csvfile)
@@ -76,22 +81,35 @@ def latest_articles(type):
     print('--------------------------------')
     return articles
 
+# 初次启动时，先获取一次所有文章
+all_articles = get_all_articles()
+for navId in binance.dict_nav.keys():
+    type = binance.dict_nav[navId]
+    latest_articles(type)
 
+
+logging.info('开始文章爬取')
 # 定时执行的时间间隔（以秒为单位）
 interval = 600
 while True:
-    # 获取所有类型的文章
-    all_articles = get_all_articles()
+    try:
+        # 获取所有类型的文章
+        all_articles = get_all_articles()
 
-    for navId in binance.dict_nav.keys():
-        type = binance.dict_nav[navId]
-        articles = latest_articles(type)
-        if articles is None:
-            continue
-        print(binance.dict_nav[navId] + '有新的文章：')
-        for article in articles:
-            dd = {"title":article['title'], "url":article['url']}
-            req = requests.post(url="http://127.0.0.1:9999/json",data=json.dumps(dd))
-            print(article['title'], article['url'], article['releaseDate'])
-    # 等待指定的时间间隔
-    time.sleep(interval)
+        for navId in binance.dict_nav.keys():
+            type = binance.dict_nav[navId]
+            articles = latest_articles(type)
+            if articles is None:
+                logging.info(binance.dict_nav[navId] + '无新文章')
+                continue
+            print(binance.dict_nav[navId] + '有新的文章：')
+            logging.info(binance.dict_nav[navId] + '有新的文章：')
+            for article in articles:
+                dd = {"title":article['title'], "url":article['url']}
+                req = requests.post(url="http://127.0.0.1:9999/json",data=json.dumps(dd))
+                print(article['title'], article['url'], article['releaseDate'])
+        # 等待指定的时间间隔
+        time.sleep(interval)
+    except Exception as e:
+        print(e)
+        time.sleep(interval)
