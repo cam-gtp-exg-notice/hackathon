@@ -17,6 +17,7 @@ APP_ID = "cli_a42d12bb897c900e"
 APP_SECRET = "hatd45fhjdQRrB5vtzgYGfvur3p0QnAV"
 # open_id of user who will receive the message
 OPEN_ID = "oc_57c0d4147cccf01a7d3329ea79066c98"
+Exg_OPEN_ID = "oc_d3941199f9f6cdae75f98defef2b5e21"
 
 ENABLE = True if all(
     (APP_ID, APP_SECRET, OPEN_ID)
@@ -75,6 +76,7 @@ class FeiShuBot:
         if not ENABLE:
             return
         self.user_id = OPEN_ID
+        self.chat_id = Exg_OPEN_ID
 
     def __getattribute__(self, __name: str) -> Any:
         """Disable all methods when enable is False"""
@@ -88,14 +90,14 @@ class FeiShuBot:
 
         return wrap
 
-    def _send_message(self, msg_type: MsgType, content: dict) -> dict:
+    def _send_message(self, receive_id: str, msg_type: MsgType, content: dict) -> dict:
         # TODO: message card
         return _post(
             MESSAGE_API,
             self.token,
             params={"receive_id_type": "chat_id"},
             json={
-                "receive_id": self.user_id,
+                "receive_id": receive_id,
                 "msg_type": msg_type,
                 "content": json.dumps(content)
             }
@@ -187,7 +189,10 @@ class FeiShuBot:
             content["header"] = {"title": {"tag": "plain_text", "content": header}, "template": template}
         else:
             content["header"] = {"title": {"tag": "plain_text", "content": "交易所公告信息"}, "template": template}
-        self._send_message("interactive", content)
+        self._send_message(self.user_id, "interactive", content)
+
+        if score == "高":
+            self._send_message(self.chat_id, "interactive", content)
 
 
 if __name__ == '__main__':
