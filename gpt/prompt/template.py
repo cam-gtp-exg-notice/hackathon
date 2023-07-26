@@ -42,6 +42,7 @@ As a blockchain developer and trader, we evaluate announcement strictly based on
 If there is no affected APIs list in announcement, then it is not an API update announcement. 
 In case of an exchange API update, we will pull the list of affected APIs.
 Based on these criteria, please provide the score and summary of the announcement.
+Think step by step.
 
 >>> {requests_result} <<<
 Use the following JSON format to return the data:
