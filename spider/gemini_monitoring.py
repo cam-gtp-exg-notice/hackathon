@@ -72,15 +72,21 @@ def save_cvs(articles):
 
 
 
-# 初次启动时，先获取一次所有文章
-articles = get_items()
-save_cvs(articles)
 
 logging.info('开始Gemini文章爬取')
 # 定时执行的时间间隔（以秒为单位）
 interval = 600
+
+isFirst = True
 while True:
     try:
+        if isFirst:
+            # 初次启动时，先获取一次所有文章
+            # 因为请求url容易报错，所以放到while中
+            articles = get_items()
+            save_cvs(articles)
+            isFirst = False
+        print('Gemini开始爬取')
         articles = get_items()
         for article in articles:
             # 判断文章是否已经存在
