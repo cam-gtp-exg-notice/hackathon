@@ -18,6 +18,7 @@ def json_request():
     out = demo.GetJsonFromURL(json_d['url'])
     ret = json.loads(out)
     ret['url'] = json_d['url']
+    ret['platform'] = json_d['platform']
     s = json.dumps(ret)
     decoded = bytes(s, 'utf-8').decode('unicode_escape')
     fs = feishu.FeiShuBot()

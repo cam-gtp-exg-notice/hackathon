@@ -200,6 +200,7 @@ if __name__ == '__main__':
     bot = FeiShuBot()
     # bot.send_text("This is a test message")
     data = {
+        "platform": "Binance",
         "title": "Binance Margin Will Delist the ATA/BUSD, FORTH/BUSD, JST/BUSD, QTUM/BUSD, SUN/BUSD, ZEN/BUSD & ZRX/BUSD Isolated Margin Pairs",
         "summary": "Binance Margin will delist the ATA/BUSD, FORTH/BUSD, JST/BUSD, QTUM/BUSD, SUN/BUSD, ZEN/BUSD and ZRX/BUSD isolated margin pairs. Users are advised to close their positions and transfer their assets from Margin Wallets to Spot Wallets before the cessation of margin trading.",
         "API": "/test1,/test2",
