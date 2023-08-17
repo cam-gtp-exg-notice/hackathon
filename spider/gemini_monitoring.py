@@ -53,7 +53,7 @@ def get_items():
         # 获取标题
         title = item.find(class_='incident-title').find('a').get_text()
         print(url, title)
-        page = {"title": title, "url": url}
+        page = {"title": title, "url": "https://status.gemini.com" + url}
         pages.append(page)
     return pages
 

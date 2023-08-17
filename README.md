@@ -17,7 +17,13 @@
 ```
 
 ## Docker 部署
+
 ```bash
+# 停止容器
+docker stop hackathon
+# 删除容器
+docker rm hackathon
+
 # 创建镜像
 docker build -t hackathon .
 # 运行镜像
