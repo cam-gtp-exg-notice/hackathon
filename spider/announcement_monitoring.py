@@ -105,7 +105,7 @@ while True:
             print(binance.dict_nav[navId] + '有新的文章：')
             logging.info(binance.dict_nav[navId] + '有新的文章：')
             for article in articles:
-                dd = {"title":article['title'], "url":article['url']}
+                dd = {"platform":"Binance", "title":article['title'], "url":article['url']}
                 req = requests.post(url="http://127.0.0.1:9999/json",data=json.dumps(dd))
                 print(article['title'], article['url'], article['releaseDate'])
         # 等待指定的时间间隔

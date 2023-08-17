@@ -121,6 +121,7 @@ class FeiShuBot:
             header(str): card header, default is empty
         """
 
+        platform = message["platform"]
         title = message["title"]
         summary = message['summary']
         api = message['API']
@@ -188,7 +189,7 @@ class FeiShuBot:
         if header:
             content["header"] = {"title": {"tag": "plain_text", "content": header}, "template": template}
         else:
-            content["header"] = {"title": {"tag": "plain_text", "content": "交易所公告信息"}, "template": template}
+            content["header"] = {"title": {"tag": "plain_text", "content": f"{platform}交易所公告信息"}, "template": template}
         self._send_message(self.user_id, "interactive", content)
 
         if score == "高":

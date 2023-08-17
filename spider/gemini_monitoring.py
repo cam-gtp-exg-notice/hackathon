@@ -71,6 +71,11 @@ def save_cvs(articles):
     print(f"数据已保存到 {filename}")
 
 
+
+# 初次启动时，先获取一次所有文章
+articles = get_items()
+save_cvs(articles)
+
 logging.info('开始Gemini文章爬取')
 # 定时执行的时间间隔（以秒为单位）
 interval = 600
@@ -82,7 +87,7 @@ while True:
             if article["url"] in read_cvs():
                 print('Gemini没有新文章')
                 continue
-            dd = {"title":article['title'], "url":article['url']}
+            dd = {"platform":"Gemini", "title":article['title'], "url":article['url']}
             req = requests.post(url="http://127.0.0.1:9999/json",data=json.dumps(dd))
             print(article['title'], article['url'])
         # 保存文章
