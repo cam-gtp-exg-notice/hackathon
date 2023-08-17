@@ -63,7 +63,7 @@ def save_cvs(articles):
     for item in articles:
         data.append([item['title'], item['url']])
 
-    with open(filename, "a", newline="", encoding="utf-8") as csvfile:
+    with open(filename, "w", newline="", encoding="utf-8") as csvfile:
         writer = csv.writer(csvfile)
         #writer.writerow(["title", "url")  # 写入CSV文件的标题行
         writer.writerows(data)  # 写入数据行
@@ -100,4 +100,4 @@ while True:
         time.sleep(interval)
     except Exception as e:
         print(e)
-        time.sleep(1)
+        time.sleep(10)
