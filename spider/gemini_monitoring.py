@@ -71,9 +71,7 @@ def save_cvs(articles):
     print(f"数据已保存到 {filename}")
 
 
-
-
-logging.info('开始Gemini文章爬取')
+print('开始Gemini文章爬取')
 # 定时执行的时间间隔（以秒为单位）
 interval = 600
 
