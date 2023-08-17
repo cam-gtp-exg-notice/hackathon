@@ -37,7 +37,7 @@ def get_items():
     }
     # 使用的代理ip地址
     proxy = {"https": '127.0.0.1:7890'}
-    req = requests.get(url="https://mltech.ai/blog", headers=headers, proxies=proxy)
+    req = requests.get(url="https://mltech.ai/blog", headers=headers)
     # 判断结果200
     if req.status_code != 200:
         print('请求失败', req.reason)
