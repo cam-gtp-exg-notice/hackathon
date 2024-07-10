@@ -109,7 +109,7 @@ class FeiShuBot:
         Args:
             msg(str): message to be sent
         """
-        return self._send_message("text", {"text": msg})
+        return self._send_message(self.user_id, "text", {"text": msg})
 
     def send_card(self, message: str, header: str = ""):
         """Send feishu card message, only support markdown format now.
