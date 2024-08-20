@@ -72,9 +72,9 @@ def GetJsonFromURL(url):
 
     response = chain(inputs)
     out = response['output']
-    if is_json_string(out):
-        return out
-    return ""
+    print("response output: ",out)
+
+    return out
 
 def is_json_string(s):
     try:
