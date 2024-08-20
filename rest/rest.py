@@ -22,6 +22,9 @@ def json_request():
     for i in range(5):
         try:
             out = demo.GetJsonFromURL(json_d['url'])
+            if not demo.is_json_string(out):
+                out = ""
+                continue
             break
         except Exception as e:
             print("error", e)
@@ -29,11 +32,10 @@ def json_request():
             time.sleep(10)
             continue
     fs = feishu.FeiShuBot()
-    if not demo.is_json_string(out):
+    if out == "":
         print("获取失败: result is not json", out)
         fs.send_text(f"获取失败: title: {json_d['title']}, url: {json_d['url']}")
         return
-
     ret = json.loads(out)
     ret['url'] = json_d['url']
     ret['platform'] = json_d['platform']
